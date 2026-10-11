@@ -1,0 +1,1224 @@
+{
+  "currency": "INR",
+  "tax": {
+    "label": "GST",
+    "rate": 0.18
+  },
+  "services": [
+    {
+      "id": "fdm",
+      "slug": "fdm",
+      "name": "FDM 3D Printing",
+      "category": "printing",
+      "tagline": "Tough, affordable parts in engineering-grade plastics.",
+      "description": "Our farm of calibrated high-speed printers turns your files into strong functional parts, enclosures, jigs and fixtures — fast and at the lowest cost per part.",
+      "features": [
+        "PLA, PETG, ABS, TPU & carbon-fiber nylon",
+        "Layer heights from 0.08 to 0.28 mm",
+        "Build volume up to 300 × 300 × 400 mm",
+        "Custom infill from 10% to 100%"
+      ],
+      "technologies": [
+        "fdm"
+      ],
+      "pricingMode": "instant",
+      "startingPrice": 299,
+      "priceUnit": "per part",
+      "turnaround": "2–4 days",
+      "setupFee": 99,
+      "priceMultiplier": 1,
+      "minQuantity": 1,
+      "defaultQuality": "standard",
+      "visual": "fdm",
+      "accent": "#ff7a45",
+      "popular": true,
+      "sortOrder": 1,
+      "active": true
+    },
+    {
+      "id": "sla",
+      "slug": "sla",
+      "name": "Resin (SLA) Printing",
+      "category": "printing",
+      "tagline": "Glass-smooth surfaces and razor-sharp detail down to 25 µm.",
+      "description": "Laser and masked-SLA machines deliver injection-mold-like finishes — perfect for jewelry masters, dental models, product visuals and clear optical parts.",
+      "features": [
+        "Standard, tough, clear & 8K detail resins",
+        "25–50 µm layer resolution",
+        "Washed, UV-cured & support-free",
+        "Near-invisible layer lines"
+      ],
+      "technologies": [
+        "sla"
+      ],
+      "pricingMode": "instant",
+      "startingPrice": 499,
+      "priceUnit": "per part",
+      "turnaround": "3–5 days",
+      "setupFee": 149,
+      "priceMultiplier": 1,
+      "minQuantity": 1,
+      "defaultQuality": "standard",
+      "visual": "sla",
+      "accent": "#a78bfa",
+      "popular": true,
+      "sortOrder": 2,
+      "active": true
+    },
+    {
+      "id": "sls",
+      "slug": "sls",
+      "name": "SLS Nylon Printing",
+      "category": "printing",
+      "tagline": "Support-free, production-grade nylon with total design freedom.",
+      "description": "Powder-bed laser sintering builds durable PA12 parts with no support structures — interlocking assemblies, living hinges and lattices are all welcome.",
+      "features": [
+        "PA12 & glass-filled PA12",
+        "No supports — any geometry",
+        "Isotropic, end-use strength",
+        "Dyeing & vapor smoothing available"
+      ],
+      "technologies": [
+        "sls"
+      ],
+      "pricingMode": "instant",
+      "startingPrice": 999,
+      "priceUnit": "per part",
+      "turnaround": "5–7 days",
+      "setupFee": 249,
+      "priceMultiplier": 1,
+      "minQuantity": 1,
+      "defaultQuality": "standard",
+      "visual": "sls",
+      "accent": "#38bdf8",
+      "popular": false,
+      "sortOrder": 3,
+      "active": true
+    },
+    {
+      "id": "metal",
+      "slug": "metal",
+      "name": "Metal 3D Printing",
+      "category": "printing",
+      "tagline": "Laser-fused stainless steel, titanium and aluminum.",
+      "description": "Direct metal laser sintering for aerospace brackets, medical instruments, tooling and high-performance end-use parts — with heat treatment and polishing.",
+      "features": [
+        "316L stainless, Ti6Al4V & AlSi10Mg",
+        "Fully dense, weldable parts",
+        "Heat treatment & mirror polishing",
+        "Material certificates on request"
+      ],
+      "technologies": [
+        "metal"
+      ],
+      "pricingMode": "instant",
+      "startingPrice": 7999,
+      "priceUnit": "per part",
+      "turnaround": "8–12 days",
+      "setupFee": 1499,
+      "priceMultiplier": 1,
+      "minQuantity": 1,
+      "defaultQuality": "standard",
+      "visual": "metal",
+      "accent": "#f5c76a",
+      "popular": false,
+      "sortOrder": 4,
+      "active": true
+    },
+    {
+      "id": "cad",
+      "slug": "cad",
+      "name": "3D Modeling & CAD Design",
+      "category": "design",
+      "tagline": "From napkin sketch to print-ready, manufacturable CAD.",
+      "description": "Our engineers and artists model parts, products and characters in SolidWorks, Fusion 360 and Blender — optimized for the process you choose.",
+      "features": [
+        "Parametric CAD & organic sculpting",
+        "Design for additive manufacturing",
+        "STEP, STL, 3MF & OBJ deliverables",
+        "Revisions until it is right"
+      ],
+      "technologies": [],
+      "pricingMode": "quote",
+      "startingPrice": 1499,
+      "priceUnit": "per project",
+      "turnaround": "2–5 days",
+      "setupFee": 0,
+      "priceMultiplier": 1,
+      "minQuantity": 1,
+      "defaultQuality": "",
+      "visual": "cad",
+      "accent": "#22d3ee",
+      "popular": true,
+      "sortOrder": 5,
+      "active": true
+    },
+    {
+      "id": "scanning",
+      "slug": "scanning",
+      "name": "3D Scanning & Reverse Engineering",
+      "category": "design",
+      "tagline": "Capture real-world objects with accuracy up to 0.02 mm.",
+      "description": "Structured-light and laser scanners digitize parts, people and heritage pieces. We rebuild worn or discontinued parts as clean, editable CAD.",
+      "features": [
+        "Accuracy up to 0.02 mm",
+        "Objects from 1 cm to 3 m",
+        "Mesh repair & CAD reconstruction",
+        "On-site scanning available"
+      ],
+      "technologies": [],
+      "pricingMode": "quote",
+      "startingPrice": 2499,
+      "priceUnit": "per object",
+      "turnaround": "1–3 days",
+      "setupFee": 0,
+      "priceMultiplier": 1,
+      "minQuantity": 1,
+      "defaultQuality": "",
+      "visual": "scanning",
+      "accent": "#34d399",
+      "popular": false,
+      "sortOrder": 6,
+      "active": true
+    },
+    {
+      "id": "prototyping",
+      "slug": "prototyping",
+      "name": "Rapid Prototyping",
+      "category": "printing",
+      "tagline": "Iterate overnight — test form, fit and function in 24–48 h.",
+      "description": "A priority lane for product teams: engineering review of every file, mixed technologies in one order and same-day dispatch so you can iterate faster.",
+      "features": [
+        "24–48 h priority production",
+        "Free DFM feedback on every upload",
+        "FDM, resin & nylon in one order",
+        "Dedicated project manager"
+      ],
+      "technologies": [
+        "fdm",
+        "sla",
+        "sls"
+      ],
+      "pricingMode": "instant",
+      "startingPrice": 699,
+      "priceUnit": "per part",
+      "turnaround": "24–48 h",
+      "setupFee": 199,
+      "priceMultiplier": 1.2,
+      "minQuantity": 1,
+      "defaultQuality": "standard",
+      "visual": "prototyping",
+      "accent": "#f472b6",
+      "popular": false,
+      "sortOrder": 7,
+      "active": true
+    },
+    {
+      "id": "batch",
+      "slug": "batch",
+      "name": "Batch Production",
+      "category": "printing",
+      "tagline": "Low-volume manufacturing from 10 to 10,000 parts.",
+      "description": "Bridge the gap to injection molding with repeatable, quality-checked batches, nested build plates and pricing that drops as you scale.",
+      "features": [
+        "Volume discounts up to 30%",
+        "QC-inspected, consistent batches",
+        "Custom packaging & labelling",
+        "Scheduled repeat orders"
+      ],
+      "technologies": [
+        "fdm",
+        "sla",
+        "sls"
+      ],
+      "pricingMode": "instant",
+      "startingPrice": 49,
+      "priceUnit": "per unit",
+      "turnaround": "5–10 days",
+      "setupFee": 299,
+      "priceMultiplier": 0.9,
+      "minQuantity": 10,
+      "defaultQuality": "standard",
+      "visual": "batch",
+      "accent": "#60a5fa",
+      "popular": false,
+      "sortOrder": 8,
+      "active": true
+    },
+    {
+      "id": "finishing",
+      "slug": "finishing",
+      "name": "Post-Processing & Painting",
+      "category": "finishing",
+      "tagline": "Sanding, priming, painting and smoothing to showroom quality.",
+      "description": "Our finishing studio turns raw prints into display pieces: seamless surfaces, automotive paint, metallic effects and protective clear coats.",
+      "features": [
+        "Sanding & filler priming",
+        "Airbrushed custom paint jobs",
+        "Vapor smoothing & dyeing",
+        "Threaded inserts & assembly"
+      ],
+      "technologies": [],
+      "pricingMode": "quote",
+      "startingPrice": 499,
+      "priceUnit": "per part",
+      "turnaround": "+2–4 days",
+      "setupFee": 0,
+      "priceMultiplier": 1,
+      "minQuantity": 1,
+      "defaultQuality": "",
+      "visual": "finishing",
+      "accent": "#fb923c",
+      "popular": false,
+      "sortOrder": 9,
+      "active": true
+    },
+    {
+      "id": "miniatures",
+      "slug": "miniatures",
+      "name": "Miniatures & Figurines",
+      "category": "printing",
+      "tagline": "Tabletop armies, collectibles and busts with crisp 8K detail.",
+      "description": "High-detail resin captures every scale, buckle and facial expression. Order raw, primed or fully hand-painted collector-grade pieces.",
+      "features": [
+        "8K high-detail resin",
+        "Supports removed by hand",
+        "Optional priming & painting",
+        "Army-size bulk discounts"
+      ],
+      "technologies": [
+        "sla"
+      ],
+      "pricingMode": "instant",
+      "startingPrice": 249,
+      "priceUnit": "per mini",
+      "turnaround": "3–5 days",
+      "setupFee": 99,
+      "priceMultiplier": 1.1,
+      "minQuantity": 1,
+      "defaultQuality": "fine",
+      "visual": "miniatures",
+      "accent": "#c084fc",
+      "popular": true,
+      "sortOrder": 10,
+      "active": true
+    },
+    {
+      "id": "architecture",
+      "slug": "architecture",
+      "name": "Architectural Models",
+      "category": "printing",
+      "tagline": "Scale models that sell the vision — from massing to fine detail.",
+      "description": "Site plans, massing studies and presentation models printed from your BIM or CAD exports with crisp facades, landscaping and optional lighting.",
+      "features": [
+        "Scales from 1:50 to 1:2000",
+        "Revit, SketchUp & Rhino friendly",
+        "Multi-part assemblies on bases",
+        "Optional LED lighting"
+      ],
+      "technologies": [
+        "fdm",
+        "sla"
+      ],
+      "pricingMode": "instant",
+      "startingPrice": 4999,
+      "priceUnit": "per model",
+      "turnaround": "5–8 days",
+      "setupFee": 499,
+      "priceMultiplier": 1.05,
+      "minQuantity": 1,
+      "defaultQuality": "fine",
+      "visual": "architecture",
+      "accent": "#2dd4bf",
+      "popular": false,
+      "sortOrder": 11,
+      "active": true
+    },
+    {
+      "id": "gifts",
+      "slug": "gifts",
+      "name": "Custom Gifts & Decor",
+      "category": "printing",
+      "tagline": "Personalised lamps, lithophanes, nameplates and keepsakes.",
+      "description": "Turn photos, names and ideas into one-of-a-kind gifts — lithophane lamps, custom figurines, wedding toppers and branded corporate merch.",
+      "features": [
+        "Photo lithophanes & lamps",
+        "Personalised names & logos",
+        "Gift-ready packaging",
+        "Corporate bulk orders"
+      ],
+      "technologies": [
+        "fdm",
+        "sla"
+      ],
+      "pricingMode": "instant",
+      "startingPrice": 399,
+      "priceUnit": "per item",
+      "turnaround": "3–5 days",
+      "setupFee": 49,
+      "priceMultiplier": 1,
+      "minQuantity": 1,
+      "defaultQuality": "standard",
+      "visual": "gifts",
+      "accent": "#fb7185",
+      "popular": false,
+      "sortOrder": 12,
+      "active": true
+    }
+  ],
+  "materials": [
+    {
+      "id": "pla",
+      "slug": "pla",
+      "name": "PLA",
+      "technology": "fdm",
+      "description": "Easy, eco-friendly and crisp — the everyday all-rounder for models and prototypes.",
+      "density": 1.24,
+      "pricePerGram": 2.5,
+      "colors": [
+        {
+          "name": "Sunset Orange",
+          "hex": "#ff7a45"
+        },
+        {
+          "name": "Galaxy Black",
+          "hex": "#1f1f26"
+        },
+        {
+          "name": "Arctic White",
+          "hex": "#f1f1ee"
+        },
+        {
+          "name": "Signal Red",
+          "hex": "#e63946"
+        },
+        {
+          "name": "Ocean Blue",
+          "hex": "#2563eb"
+        },
+        {
+          "name": "Forest Green",
+          "hex": "#2f9e44"
+        },
+        {
+          "name": "Silk Gold",
+          "hex": "#d4a017"
+        }
+      ],
+      "properties": {
+        "strength": 3,
+        "flexibility": 2,
+        "heatResistance": 2,
+        "detail": 4
+      },
+      "bestFor": [
+        "Prototypes",
+        "Decor",
+        "Cosplay"
+      ],
+      "appearance": {
+        "roughness": 0.55,
+        "metalness": 0,
+        "clearcoat": 0.15,
+        "opacity": 1,
+        "layerLines": true
+      },
+      "sortOrder": 1,
+      "active": true
+    },
+    {
+      "id": "petg",
+      "slug": "petg",
+      "name": "PETG",
+      "technology": "fdm",
+      "description": "Tough, chemical-resistant and slightly flexible — great for functional and outdoor parts.",
+      "density": 1.27,
+      "pricePerGram": 3,
+      "colors": [
+        {
+          "name": "Transparent Blue",
+          "hex": "#4f9fe8"
+        },
+        {
+          "name": "Jet Black",
+          "hex": "#18181d"
+        },
+        {
+          "name": "Pure White",
+          "hex": "#f4f4f2"
+        },
+        {
+          "name": "Lime",
+          "hex": "#84cc16"
+        }
+      ],
+      "properties": {
+        "strength": 4,
+        "flexibility": 3,
+        "heatResistance": 3,
+        "detail": 3
+      },
+      "bestFor": [
+        "Functional parts",
+        "Outdoor",
+        "Containers"
+      ],
+      "appearance": {
+        "roughness": 0.28,
+        "metalness": 0,
+        "clearcoat": 0.6,
+        "opacity": 1,
+        "layerLines": true
+      },
+      "sortOrder": 2,
+      "active": true
+    },
+    {
+      "id": "abs",
+      "slug": "abs",
+      "name": "ABS",
+      "technology": "fdm",
+      "description": "Heat-resistant engineering plastic that can be vapor-smoothed to a glossy finish.",
+      "density": 1.04,
+      "pricePerGram": 3,
+      "colors": [
+        {
+          "name": "Graphite",
+          "hex": "#3a3d45"
+        },
+        {
+          "name": "Racing Red",
+          "hex": "#d62828"
+        },
+        {
+          "name": "Ivory",
+          "hex": "#efe9dc"
+        }
+      ],
+      "properties": {
+        "strength": 4,
+        "flexibility": 3,
+        "heatResistance": 4,
+        "detail": 3
+      },
+      "bestFor": [
+        "Automotive",
+        "Enclosures",
+        "Tools"
+      ],
+      "appearance": {
+        "roughness": 0.45,
+        "metalness": 0,
+        "clearcoat": 0.2,
+        "opacity": 1,
+        "layerLines": true
+      },
+      "sortOrder": 3,
+      "active": true
+    },
+    {
+      "id": "tpu",
+      "slug": "tpu",
+      "name": "TPU 95A",
+      "technology": "fdm",
+      "description": "Rubber-like flexibility and abrasion resistance for gaskets, grips and wearables.",
+      "density": 1.21,
+      "pricePerGram": 6,
+      "colors": [
+        {
+          "name": "Black",
+          "hex": "#1b1b1f"
+        },
+        {
+          "name": "Fire Red",
+          "hex": "#ef4444"
+        },
+        {
+          "name": "Natural",
+          "hex": "#e6e1d3"
+        }
+      ],
+      "properties": {
+        "strength": 3,
+        "flexibility": 5,
+        "heatResistance": 2,
+        "detail": 2
+      },
+      "bestFor": [
+        "Gaskets",
+        "Phone cases",
+        "Wearables"
+      ],
+      "appearance": {
+        "roughness": 0.78,
+        "metalness": 0,
+        "clearcoat": 0,
+        "opacity": 1,
+        "layerLines": true
+      },
+      "sortOrder": 4,
+      "active": true
+    },
+    {
+      "id": "pa-cf",
+      "slug": "pa-cf",
+      "name": "Carbon Fiber Nylon",
+      "technology": "fdm",
+      "description": "Stiff, light and strong — a metal replacement for jigs, drones and robotics.",
+      "density": 1.15,
+      "pricePerGram": 12,
+      "colors": [
+        {
+          "name": "Carbon Black",
+          "hex": "#25262c"
+        }
+      ],
+      "properties": {
+        "strength": 5,
+        "flexibility": 2,
+        "heatResistance": 5,
+        "detail": 3
+      },
+      "bestFor": [
+        "Drones",
+        "Jigs & fixtures",
+        "Robotics"
+      ],
+      "appearance": {
+        "roughness": 0.9,
+        "metalness": 0.05,
+        "clearcoat": 0,
+        "opacity": 1,
+        "layerLines": true
+      },
+      "sortOrder": 5,
+      "active": true
+    },
+    {
+      "id": "resin-standard",
+      "slug": "resin-standard",
+      "name": "Standard Resin",
+      "technology": "sla",
+      "description": "Smooth, high-detail parts for product visuals, models and presentation pieces.",
+      "density": 1.15,
+      "pricePerGram": 8,
+      "colors": [
+        {
+          "name": "Grey",
+          "hex": "#8b9099"
+        },
+        {
+          "name": "White",
+          "hex": "#efefef"
+        },
+        {
+          "name": "Black",
+          "hex": "#1d1e22"
+        }
+      ],
+      "properties": {
+        "strength": 3,
+        "flexibility": 1,
+        "heatResistance": 2,
+        "detail": 5
+      },
+      "bestFor": [
+        "Visual models",
+        "Product mockups",
+        "Figurines"
+      ],
+      "appearance": {
+        "roughness": 0.32,
+        "metalness": 0,
+        "clearcoat": 0.35,
+        "opacity": 1,
+        "layerLines": false
+      },
+      "sortOrder": 6,
+      "active": true
+    },
+    {
+      "id": "resin-tough",
+      "slug": "resin-tough",
+      "name": "Tough Resin",
+      "technology": "sla",
+      "description": "ABS-like impact resistance for snap-fits, enclosures and functional prototypes.",
+      "density": 1.13,
+      "pricePerGram": 11,
+      "colors": [
+        {
+          "name": "Slate",
+          "hex": "#5c6370"
+        },
+        {
+          "name": "Black",
+          "hex": "#1d1e22"
+        }
+      ],
+      "properties": {
+        "strength": 4,
+        "flexibility": 3,
+        "heatResistance": 3,
+        "detail": 4
+      },
+      "bestFor": [
+        "Snap-fits",
+        "Enclosures",
+        "Functional prototypes"
+      ],
+      "appearance": {
+        "roughness": 0.4,
+        "metalness": 0,
+        "clearcoat": 0.25,
+        "opacity": 1,
+        "layerLines": false
+      },
+      "sortOrder": 7,
+      "active": true
+    },
+    {
+      "id": "resin-clear",
+      "slug": "resin-clear",
+      "name": "Clear Resin",
+      "technology": "sla",
+      "description": "Glass-like transparency for optics, fluidics, light pipes and show pieces.",
+      "density": 1.12,
+      "pricePerGram": 11,
+      "colors": [
+        {
+          "name": "Crystal Clear",
+          "hex": "#cfeeff"
+        },
+        {
+          "name": "Amber",
+          "hex": "#f59e0b"
+        }
+      ],
+      "properties": {
+        "strength": 3,
+        "flexibility": 1,
+        "heatResistance": 2,
+        "detail": 5
+      },
+      "bestFor": [
+        "Optics",
+        "Fluidics",
+        "Light pipes"
+      ],
+      "appearance": {
+        "roughness": 0.05,
+        "metalness": 0,
+        "clearcoat": 1,
+        "opacity": 0.55,
+        "layerLines": false
+      },
+      "sortOrder": 8,
+      "active": true
+    },
+    {
+      "id": "resin-8k",
+      "slug": "resin-8k",
+      "name": "8K Detail Resin",
+      "technology": "sla",
+      "description": "Ultra-fine detail for miniatures, jewelry masters and dental models.",
+      "density": 1.1,
+      "pricePerGram": 14,
+      "colors": [
+        {
+          "name": "Bone",
+          "hex": "#e8dcc6"
+        },
+        {
+          "name": "Grey",
+          "hex": "#8b9099"
+        }
+      ],
+      "properties": {
+        "strength": 3,
+        "flexibility": 1,
+        "heatResistance": 2,
+        "detail": 5
+      },
+      "bestFor": [
+        "Miniatures",
+        "Jewelry",
+        "Dental"
+      ],
+      "appearance": {
+        "roughness": 0.3,
+        "metalness": 0,
+        "clearcoat": 0.3,
+        "opacity": 1,
+        "layerLines": false
+      },
+      "sortOrder": 9,
+      "active": true
+    },
+    {
+      "id": "pa12",
+      "slug": "pa12",
+      "name": "PA12 Nylon",
+      "technology": "sls",
+      "description": "Strong, durable production nylon — no supports, end-use ready.",
+      "density": 1.01,
+      "pricePerGram": 20,
+      "colors": [
+        {
+          "name": "Natural White",
+          "hex": "#e9e6df"
+        },
+        {
+          "name": "Dyed Black",
+          "hex": "#2b2b30"
+        }
+      ],
+      "properties": {
+        "strength": 4,
+        "flexibility": 4,
+        "heatResistance": 4,
+        "detail": 4
+      },
+      "bestFor": [
+        "End-use parts",
+        "Living hinges",
+        "Assemblies"
+      ],
+      "appearance": {
+        "roughness": 0.95,
+        "metalness": 0,
+        "clearcoat": 0,
+        "opacity": 1,
+        "layerLines": false
+      },
+      "sortOrder": 10,
+      "active": true
+    },
+    {
+      "id": "pa12-gf",
+      "slug": "pa12-gf",
+      "name": "PA12 Glass-Filled",
+      "technology": "sls",
+      "description": "Extra stiffness and thermal stability for housings, brackets and fixtures.",
+      "density": 1.3,
+      "pricePerGram": 24,
+      "colors": [
+        {
+          "name": "Stone Grey",
+          "hex": "#cfcfc9"
+        }
+      ],
+      "properties": {
+        "strength": 5,
+        "flexibility": 2,
+        "heatResistance": 5,
+        "detail": 3
+      },
+      "bestFor": [
+        "Housings",
+        "Brackets",
+        "Fixtures"
+      ],
+      "appearance": {
+        "roughness": 0.9,
+        "metalness": 0,
+        "clearcoat": 0,
+        "opacity": 1,
+        "layerLines": false
+      },
+      "sortOrder": 11,
+      "active": true
+    },
+    {
+      "id": "ss316l",
+      "slug": "ss316l",
+      "name": "Stainless Steel 316L",
+      "technology": "metal",
+      "description": "Corrosion-resistant, tough and fully dense — food, marine and medical grade.",
+      "density": 7.9,
+      "pricePerGram": 35,
+      "colors": [
+        {
+          "name": "Brushed Steel",
+          "hex": "#b9bfc7"
+        },
+        {
+          "name": "Polished",
+          "hex": "#e2e6ea"
+        }
+      ],
+      "properties": {
+        "strength": 5,
+        "flexibility": 3,
+        "heatResistance": 5,
+        "detail": 4
+      },
+      "bestFor": [
+        "Marine",
+        "Medical tools",
+        "Tooling"
+      ],
+      "appearance": {
+        "roughness": 0.32,
+        "metalness": 1,
+        "clearcoat": 0,
+        "opacity": 1,
+        "layerLines": false
+      },
+      "sortOrder": 12,
+      "active": true
+    },
+    {
+      "id": "ti64",
+      "slug": "ti64",
+      "name": "Titanium Ti6Al4V",
+      "technology": "metal",
+      "description": "Aerospace strength at half the weight of steel — and biocompatible.",
+      "density": 4.43,
+      "pricePerGram": 110,
+      "colors": [
+        {
+          "name": "Titanium Grey",
+          "hex": "#9a9ea5"
+        }
+      ],
+      "properties": {
+        "strength": 5,
+        "flexibility": 3,
+        "heatResistance": 5,
+        "detail": 4
+      },
+      "bestFor": [
+        "Aerospace",
+        "Implants",
+        "Motorsport"
+      ],
+      "appearance": {
+        "roughness": 0.38,
+        "metalness": 1,
+        "clearcoat": 0,
+        "opacity": 1,
+        "layerLines": false
+      },
+      "sortOrder": 13,
+      "active": true
+    },
+    {
+      "id": "alsi10mg",
+      "slug": "alsi10mg",
+      "name": "Aluminum AlSi10Mg",
+      "technology": "metal",
+      "description": "Lightweight and thermally conductive — ideal for heat sinks and housings.",
+      "density": 2.67,
+      "pricePerGram": 60,
+      "colors": [
+        {
+          "name": "Aluminum",
+          "hex": "#cdd0d5"
+        }
+      ],
+      "properties": {
+        "strength": 4,
+        "flexibility": 2,
+        "heatResistance": 4,
+        "detail": 4
+      },
+      "bestFor": [
+        "Heat sinks",
+        "Housings",
+        "Drones"
+      ],
+      "appearance": {
+        "roughness": 0.42,
+        "metalness": 1,
+        "clearcoat": 0,
+        "opacity": 1,
+        "layerLines": false
+      },
+      "sortOrder": 14,
+      "active": true
+    }
+  ],
+  "technologies": {
+    "fdm": {
+      "key": "fdm",
+      "name": "FDM",
+      "fullName": "Fused Deposition Modeling",
+      "buildVolumeMm": {
+        "x": 300,
+        "y": 300,
+        "z": 400
+      },
+      "baseLeadDays": 2,
+      "minPartPrice": 199
+    },
+    "sla": {
+      "key": "sla",
+      "name": "SLA",
+      "fullName": "Stereolithography (Resin)",
+      "buildVolumeMm": {
+        "x": 218,
+        "y": 123,
+        "z": 250
+      },
+      "baseLeadDays": 3,
+      "minPartPrice": 299
+    },
+    "sls": {
+      "key": "sls",
+      "name": "SLS",
+      "fullName": "Selective Laser Sintering",
+      "buildVolumeMm": {
+        "x": 340,
+        "y": 340,
+        "z": 600
+      },
+      "baseLeadDays": 5,
+      "minPartPrice": 699
+    },
+    "metal": {
+      "key": "metal",
+      "name": "DMLS",
+      "fullName": "Direct Metal Laser Sintering",
+      "buildVolumeMm": {
+        "x": 250,
+        "y": 250,
+        "z": 300
+      },
+      "baseLeadDays": 8,
+      "minPartPrice": 4999
+    }
+  },
+  "qualities": {
+    "fdm": [
+      {
+        "key": "draft",
+        "name": "Draft",
+        "layer": "0.28 mm",
+        "timeFactor": 0.7
+      },
+      {
+        "key": "standard",
+        "name": "Standard",
+        "layer": "0.20 mm",
+        "timeFactor": 1
+      },
+      {
+        "key": "fine",
+        "name": "Fine",
+        "layer": "0.12 mm",
+        "timeFactor": 1.6
+      },
+      {
+        "key": "ultra",
+        "name": "Ultra",
+        "layer": "0.08 mm",
+        "timeFactor": 2.3
+      }
+    ],
+    "sla": [
+      {
+        "key": "standard",
+        "name": "Standard",
+        "layer": "50 µm",
+        "timeFactor": 1
+      },
+      {
+        "key": "fine",
+        "name": "High detail",
+        "layer": "25 µm",
+        "timeFactor": 1.7
+      }
+    ],
+    "sls": [
+      {
+        "key": "standard",
+        "name": "Standard",
+        "layer": "100 µm",
+        "timeFactor": 1
+      }
+    ],
+    "metal": [
+      {
+        "key": "standard",
+        "name": "Standard",
+        "layer": "40 µm",
+        "timeFactor": 1
+      },
+      {
+        "key": "fine",
+        "name": "Fine",
+        "layer": "20 µm",
+        "timeFactor": 1.5
+      }
+    ]
+  },
+  "finishes": [
+    {
+      "key": "sanding",
+      "name": "Sanding & smoothing",
+      "description": "Layer lines sanded to a satin finish.",
+      "technologies": [
+        "fdm",
+        "sla",
+        "sls"
+      ],
+      "basePrice": 150,
+      "perCm2": 1
+    },
+    {
+      "key": "primer",
+      "name": "Primer coat",
+      "description": "Filler primer, ready for your own paint.",
+      "technologies": [
+        "fdm",
+        "sla",
+        "sls"
+      ],
+      "basePrice": 200,
+      "perCm2": 1.5
+    },
+    {
+      "key": "painting",
+      "name": "Custom paint job",
+      "description": "Airbrushed in your colors, matte or gloss.",
+      "technologies": [
+        "fdm",
+        "sla",
+        "sls"
+      ],
+      "basePrice": 600,
+      "perCm2": 4
+    },
+    {
+      "key": "vapor-smoothing",
+      "name": "Vapor smoothing",
+      "description": "Sealed, glossy surface — injection-mold look.",
+      "technologies": [
+        "fdm",
+        "sls"
+      ],
+      "basePrice": 300,
+      "perCm2": 2
+    },
+    {
+      "key": "dyeing",
+      "name": "Color dyeing",
+      "description": "Deep, uniform color for nylon parts.",
+      "technologies": [
+        "sls"
+      ],
+      "basePrice": 250,
+      "perCm2": 1.5
+    },
+    {
+      "key": "uv-clear-coat",
+      "name": "UV clear coat",
+      "description": "Crystal-clear protective gloss.",
+      "technologies": [
+        "sla"
+      ],
+      "basePrice": 200,
+      "perCm2": 1.5
+    },
+    {
+      "key": "threaded-inserts",
+      "name": "Threaded inserts",
+      "description": "Heat-set brass inserts installed.",
+      "technologies": [
+        "fdm",
+        "sls"
+      ],
+      "basePrice": 120,
+      "perCm2": 0
+    },
+    {
+      "key": "polishing",
+      "name": "Mirror polishing",
+      "description": "Hand-polished to a reflective shine.",
+      "technologies": [
+        "metal"
+      ],
+      "basePrice": 1500,
+      "perCm2": 12
+    },
+    {
+      "key": "heat-treatment",
+      "name": "Heat treatment",
+      "description": "Stress relief for maximum strength.",
+      "technologies": [
+        "metal"
+      ],
+      "basePrice": 2000,
+      "perCm2": 0
+    }
+  ],
+  "delivery": [
+    {
+      "key": "standard",
+      "name": "Standard courier",
+      "description": "Tracked delivery across India, 3–5 business days after production",
+      "price": 99,
+      "freeOver": 1999,
+      "surchargeRate": 0,
+      "leadFactor": 1
+    },
+    {
+      "key": "express",
+      "name": "Express",
+      "description": "Priority production + express air courier (1–2 days to metro cities)",
+      "price": 299,
+      "freeOver": null,
+      "surchargeRate": 0.25,
+      "leadFactor": 0.5
+    },
+    {
+      "key": "pickup",
+      "name": "Studio pickup",
+      "description": "Collect from our studio — we notify you when ready",
+      "price": 0,
+      "freeOver": null,
+      "surchargeRate": 0,
+      "leadFactor": 1
+    }
+  ],
+  "discountTiers": [
+    {
+      "min": 5,
+      "rate": 0.04
+    },
+    {
+      "min": 10,
+      "rate": 0.08
+    },
+    {
+      "min": 25,
+      "rate": 0.12
+    },
+    {
+      "min": 50,
+      "rate": 0.18
+    },
+    {
+      "min": 100,
+      "rate": 0.25
+    }
+  ],
+  "uploads": {
+    "maxMb": 50,
+    "modelExtensions": [
+      ".stl",
+      ".obj",
+      ".3mf",
+      ".step",
+      ".stp"
+    ],
+    "referenceExtensions": [
+      ".png",
+      ".jpg",
+      ".jpeg",
+      ".webp",
+      ".pdf",
+      ".zip"
+    ]
+  }
+}
