@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { STLExporter } from 'three/addons/exporters/STLExporter.js'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { buildMotorcycle } from './motorcycle.js'
+import { buildPulsar } from './pulsar.js'
 import { buildRonin } from './ronin.js'
 import { buildScooter } from './scooter.js'
 
@@ -46,6 +47,42 @@ export const VEHICLES = [
     ],
     // Too distinctive for the generic builder: modelled part by part in ronin.js.
     builder: 'ronin',
+  },
+  {
+    key: 'bajaj-pulsar-ns160',
+    type: 'motorcycle',
+    brand: 'Bajaj',
+    name: 'Pulsar NS160',
+    engine: '160.3 cc · 4-valve oil-cooled single',
+    style: 'Naked sports',
+    tagline: 'Perimeter frame, gold USD fork, underbelly exhaust, split seats and thunderbolt LED DRLs.',
+    seat: '#151517',
+    colors: [
+      { name: 'Glossy Racing Red', hex: '#b3141c', accent: '#151619' },
+      { name: 'Metallic Pearl White', hex: '#e9e9e5', accent: '#1b1c20' },
+      { name: 'Pewter Grey', hex: '#5b5f66', accent: '#2a2c31', matte: true },
+      { name: 'Glossy Ebony Black', hex: '#141518', accent: '#5b5f66' },
+    ],
+    builder: 'pulsar',
+    variant: 'ns160',
+  },
+  {
+    key: 'bajaj-pulsar-n160',
+    type: 'motorcycle',
+    brand: 'Bajaj',
+    name: 'Pulsar N160',
+    engine: '164.82 cc · oil-cooled single',
+    style: 'Streetfighter',
+    tagline: 'Muscular tank shrouds, wolf-eye LED projector, gold USD fork and a stubby side exhaust.',
+    seat: '#151517',
+    colors: [
+      { name: 'Racing Red', hex: '#b8161d', accent: '#17181b' },
+      { name: 'Caribbean Blue', hex: '#1f5aa6', accent: '#17181b' },
+      { name: 'Brooklyn Black', hex: '#16171a', accent: '#5b5f66', matte: true },
+      { name: 'Pearl Metallic White', hex: '#ebeae6', accent: '#17181b' },
+    ],
+    builder: 'pulsar',
+    variant: 'n160',
   },
   {
     key: 're-classic-350',
@@ -299,13 +336,19 @@ export const VEHICLES = [
 
 export const vehicleByKey = (key) => VEHICLES.find((v) => v.key === key)
 
+// Detailed, model-specific builders (everything else uses the parametric motorcycle / scooter builders).
+const BUILDERS = {
+  ronin: () => buildRonin(),
+  pulsar: (vehicle) => buildPulsar(vehicle.variant),
+}
+
 const cache = new Map()
 
 /** Builds (once) and returns { roles, box, size, center } for a vehicle. */
 export function getVehicleGeometry(key) {
   if (!cache.has(key)) {
     const vehicle = vehicleByKey(key)
-    const roles = vehicle.builder === 'ronin' ? buildRonin() : vehicle.type === 'scooter' ? buildScooter(vehicle.spec) : buildMotorcycle(vehicle.spec)
+    const roles = vehicle.builder ? BUILDERS[vehicle.builder](vehicle) : vehicle.type === 'scooter' ? buildScooter(vehicle.spec) : buildMotorcycle(vehicle.spec)
     const box = new THREE.Box3()
     for (const g of Object.values(roles)) box.union(g.boundingBox)
     cache.set(key, { roles, box, size: box.getSize(new THREE.Vector3()), center: box.getCenter(new THREE.Vector3()) })

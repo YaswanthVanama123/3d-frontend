@@ -325,6 +325,29 @@ export function sectionPart(s, cut, part, arcCount, chordCount) {
 /** Cosine-spaced samples in [0, 1] — denser near the ends for smoothly rounded lofts. */
 export const easedSamples = (count) => Array.from({ length: count }, (_, i) => (1 - Math.cos((Math.PI * i) / (count - 1))) / 2)
 
+/** Lofts the superellipse section shape(u) (see superPoint) along X over the part [u0, u1] of range { x0, x1 }. */
+export function loftShape(range, shape, count, ringCount, u0 = 0, u1 = 1) {
+  return loftX(
+    easedSamples(count).map((k) => {
+      const u = u0 + (u1 - u0) * k
+      return { x: range.x0 + (range.x1 - range.x0) * u, points: sectionRing(shape(u), ringCount) }
+    }),
+  )
+}
+
+/** Like loftShape, split at y = shape(u).cut into an upper and a lower solid (two-tone paint). */
+export function splitLoft(range, shape, count, upperCount = 56, lowerCount = 44) {
+  const upper = []
+  const lower = []
+  for (const u of easedSamples(count)) {
+    const s = shape(u)
+    const x = range.x0 + (range.x1 - range.x0) * u
+    upper.push({ x, points: sectionPart(s, s.cut, 'upper', upperCount, 14) })
+    lower.push({ x, points: sectionPart(s, s.cut, 'lower', lowerCount, 14) })
+  }
+  return { upper: loftX(upper), lower: loftX(lower) }
+}
+
 /** Quarter-circle end rounding factor for a loft parameter u ∈ [0, 1]. */
 export function endRound(u, r0, r1) {
   let f = 1

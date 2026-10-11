@@ -1,26 +1,23 @@
 import * as THREE from 'three'
 import {
   Parts,
-  TAU,
   discX,
   discZ,
-  easedSamples,
   endRound,
   fender,
   finRing,
-  loftX,
+  loftShape,
   profile,
   rbox,
   ring,
   rod,
-  sectionPart,
-  sectionRing,
   smooth01,
+  splitLoft,
   spring,
-  superTorus,
   taperBar,
   tube,
 } from './parts.js'
+import { alloyWheel, brakeDisc, tyre } from './wheels.js'
 
 // Detailed TVS Ronin 225, built to its published dimensions:
 //   wheelbase 1357 mm · L × W × H 2040 × 805 × 1170 mm · seat 795 mm · ground clearance 181 mm
@@ -30,7 +27,6 @@ import {
 const WB = 1.357
 const RF = 0.293 // 17" rim + 110/70 → Ø586 mm
 const RR = 0.307 // 17" rim + 130/70 → Ø614 mm
-const RIM = 0.216 // 17" bead seat radius
 const RAKE = (25.5 * Math.PI) / 180
 const FORK_Z = 0.098
 const ARM_Z = 0.1 // swingarm legs
@@ -39,88 +35,10 @@ const fork = (t) => [WB - Math.sin(RAKE) * t, RF + Math.cos(RAKE) * t]
 
 // ── Wheels ───────────────────────────────────────────────────────────────────────────────────
 
-/** Surface point and outward normal (radial r / axial z) of the tyre's superellipse section at z = f·aZ. */
-function tyreSection(t, f) {
-  const at = (v) => {
-    const c = Math.cos(v)
-    const s = Math.sin(v)
-    return [t.rho + t.aR * Math.abs(c) ** (2 / t.n), t.aZ * Math.sign(s) * Math.abs(s) ** (2 / t.n)]
-  }
-  const v = Math.sign(f) * Math.asin(Math.min(1, Math.abs(f) ** (t.n / 2)))
-  const [r, z] = at(v)
-  const [r2, z2] = at(v + 1e-4)
-  const len = Math.hypot(r2 - r, z2 - z)
-  return { r, z, nr: (z2 - z) / len, nz: -(r2 - r) / len }
-}
-
-/** One tread block sitting on the curved tyre surface (≈5 mm proud), at wheel angle `angle`. */
-function treadBlock(P, x, y, tyre, f, angle, [len, width, height]) {
-  const { r, z, nr, nz } = tyreSection(tyre, f)
-  const lift = height / 2 - 0.007
-  const g = new THREE.BoxGeometry(height, len, width)
-  g.rotateY(Math.atan2(-nz, nr))
-  g.translate(r + nr * lift, 0, z + nz * lift)
-  g.rotateZ(angle)
-  g.translate(x, y, 0)
-  P.add('rubber', g)
-}
-
-const circlePath = (path, cx, cy, r, n) => path.setFromPoints(Array.from({ length: n }, (_, i) => new THREE.Vector2(cx + Math.cos((i / n) * TAU) * r, cy + Math.sin((i / n) * TAU) * r)))
-
-/** 5 mm brake disc with two staggered rings of cross-drilled holes. */
-function drilledDisc([x, y], rOuter, rInner, z) {
-  const shape = circlePath(new THREE.Shape(), 0, 0, rOuter, 96)
-  shape.holes.push(circlePath(new THREE.Path(), 0, 0, rInner, 72))
-  const mid = (rOuter + rInner) / 2
-  const offset = (rOuter - rInner) * 0.2
-  for (let i = 0; i < 30; i++) {
-    const a = (i / 30) * TAU
-    const r = mid + (i % 2 ? offset : -offset)
-    shape.holes.push(circlePath(new THREE.Path(), Math.cos(a) * r, Math.sin(a) * r, 0.0034, 10))
-  }
-  const g = new THREE.ExtrudeGeometry(shape, { depth: 0.005, bevelEnabled: false })
-  g.translate(x, y, z - 0.0025)
-  return g
-}
-
 function wheel(P, { x, y, r, width, discR, discSide, caliperAngle }) {
-  const wall = r - RIM
-  const tyre = { rho: RIM + wall / 2, aR: wall / 2, aZ: width / 2, n: 2.6 }
-  P.add('rubber', superTorus([x, y, 0], tyre.rho, tyre.aR, tyre.aZ, tyre.n, 128, 28))
-  // dual-purpose block tread: staggered centre blocks plus shoulder blocks
-  const pitch = TAU / 36
-  for (let i = 0; i < 36; i++) {
-    const a = i * pitch
-    treadBlock(P, x, y, tyre, 0.24, a, [0.026, width * 0.18, 0.012])
-    treadBlock(P, x, y, tyre, -0.24, a + pitch / 2, [0.026, width * 0.18, 0.012])
-    treadBlock(P, x, y, tyre, 0.66, a + pitch * 0.25, [0.021, width * 0.15, 0.011])
-    treadBlock(P, x, y, tyre, -0.66, a + pitch * 0.75, [0.021, width * 0.15, 0.011])
-  }
-
-  // 17" black alloy: rim barrel with flanges, hub and five pairs of slim spokes
-  P.add('black', ring([x, y], RIM - 0.014, RIM + 0.002, width * 0.72))
-  for (const side of [-1, 1]) P.add('black', ring([x, y], RIM - 0.003, RIM + 0.006, 0.006, side * width * 0.36))
-  P.add('black', discZ([x, y, 0], 0.058, width * 0.78, 32))
-  P.add('metal', discZ([x, y, 0], 0.02, width + 0.13, 16))
-  for (let k = 0; k < 5; k++) {
-    const a = (k / 5) * TAU + 0.31
-    for (const s of [-1, 1]) {
-      const hub = [x + Math.cos(a + s * 0.07) * 0.052, y + Math.sin(a + s * 0.07) * 0.052]
-      const rim = [x + Math.cos(a + s * 0.19) * (RIM - 0.012), y + Math.sin(a + s * 0.19) * (RIM - 0.012)]
-      P.add('black', taperBar(hub, rim, 0.026, 0.015, 0.03))
-    }
-  }
-
-  // cross-drilled disc on a black five-arm carrier, with its caliper
-  const dz = discSide * (width / 2 + 0.012)
-  P.add('steel', drilledDisc([x, y], discR, discR * 0.74, dz))
-  for (let k = 0; k < 5; k++) {
-    const a = (k / 5) * TAU
-    const c = (rr) => [x + Math.cos(a) * rr, y + Math.sin(a) * rr]
-    P.add('black', taperBar(c(0.045), c(discR * 0.77), 0.022, 0.016, 0.005, dz))
-  }
-  const ca = caliperAngle
-  P.add('black', rbox(0.072, 0.05, 0.042, 0.012), { p: [x + Math.cos(ca) * discR * 0.84, y + Math.sin(ca) * discR * 0.84, dz + discSide * 0.006], r: [0, 0, ca + Math.PI / 2] })
+  tyre(P, { x, y, r, width, tread: 'block' }) // dual-purpose blocks
+  alloyWheel(P, { x, y, width, spokes: 'pairs5' })
+  brakeDisc(P, { x, y, r: discR, z: discSide * (width / 2 + 0.012), side: discSide, caliperAngle, style: 'drilled' })
 }
 
 // ── Tank, seat and tail (lofted superellipse sections) ───────────────────────────────────────
@@ -161,15 +79,9 @@ function tankFrame(u, t, side, lift = 0.0012) {
 }
 
 function tank(P) {
-  const upper = []
-  const lower = []
-  for (const u of easedSamples(46)) {
-    const s = tankShape(u)
-    upper.push({ x: tankX(u), points: sectionPart(s, s.cut, 'upper', 56, 14) })
-    lower.push({ x: tankX(u), points: sectionPart(s, s.cut, 'lower', 44, 14) })
-  }
-  P.add('paint', loftX(upper))
-  P.add('paint2', loftX(lower))
+  const { upper, lower } = splitLoft(TANK, tankShape, 46)
+  P.add('paint', upper)
+  P.add('paint2', lower)
 
   // flush aircraft-style fuel cap, tilted to the slope of the crown
   const uc = 0.66
@@ -198,16 +110,6 @@ function tailShape(u) {
   const yc = (top + bottom) / 2
   const e = endRound(u, 0.14, 0)
   return { yc, hTop: (top - yc) * e, hBot: (yc - bottom) * e, hw: (0.08 + 0.03 * u) * e, nTop: 3, nBot: 3 }
-}
-
-/** Lofts `shape` over the part [u0, u1] of `range`. */
-function loft(range, shape, count, ringCount, u0 = 0, u1 = 1) {
-  return loftX(
-    easedSamples(count).map((k) => {
-      const u = u0 + (u1 - u0) * k
-      return { x: range.x0 + (range.x1 - range.x0) * u, points: sectionRing(shape(u), ringCount) }
-    }),
-  )
 }
 
 // ── Front end & cockpit ──────────────────────────────────────────────────────────────────────
@@ -405,9 +307,9 @@ function chassis(P) {
 
 function rear(P) {
   // flat one-piece brat seat over a slim black tail cowl; its rounded tip is the LED tail lamp
-  P.add('seat', loft(SEAT, seatShape, 40, 64))
-  P.add('tail', loft(TAIL, tailShape, 10, 48, 0, 0.09))
-  P.add('black', loft(TAIL, tailShape, 20, 48, 0.09, 1))
+  P.add('seat', loftShape(SEAT, seatShape, 40, 64))
+  P.add('tail', loftShape(TAIL, tailShape, 10, 48, 0, 0.09))
+  P.add('black', loftShape(TAIL, tailShape, 20, 48, 0.09, 1))
 
   // long, tapering tail tidy sweeping down to the number plate, with the indicators
   const tidy = (u) => {
@@ -415,7 +317,7 @@ function rear(P) {
     const h = 0.026 - 0.01 * u
     return { yc, hTop: h, hBot: h, hw: 0.062 - 0.026 * u, nTop: 3, nBot: 3 }
   }
-  P.add('black', loft({ x0: 0.08, x1: -0.345 }, tidy, 24, 32))
+  P.add('black', loftShape({ x0: 0.08, x1: -0.345 }, tidy, 24, 32))
   P.add('black', rbox(0.008, 0.115, 0.195, 0.004), { p: [-0.37, 0.535, 0], r: [0, 0, -0.3] })
   P.add('plate', rbox(0.004, 0.1, 0.18, 0.0015), { p: [-0.376, 0.535, 0], r: [0, 0, -0.3] })
   for (const side of [-1, 1]) {
