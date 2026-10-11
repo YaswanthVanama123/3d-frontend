@@ -322,6 +322,49 @@ export function sectionPart(s, cut, part, arcCount, chordCount) {
   return pts
 }
 
+/**
+ * Symmetric section from a half outline of [y, z] corners (top centre → +Z side → bottom centre), each corner
+ * rounded with `steps` points. Equal corner counts give equal point counts, so sections loft cleanly.
+ */
+export function roundedSection(half, radius, steps = 4) {
+  const poly = [...half, ...half.slice(1, -1).reverse().map(([y, z]) => [y, -z])]
+  const n = poly.length
+  const out = []
+  for (let i = 0; i < n; i++) {
+    const prev = poly[(i - 1 + n) % n]
+    const cur = poly[i]
+    const next = poly[(i + 1) % n]
+    const lenA = Math.hypot(prev[0] - cur[0], prev[1] - cur[1])
+    const lenB = Math.hypot(next[0] - cur[0], next[1] - cur[1])
+    const d = Math.min(radius, lenA * 0.45, lenB * 0.45)
+    const a = lenA > 1e-9 ? [cur[0] + ((prev[0] - cur[0]) * d) / lenA, cur[1] + ((prev[1] - cur[1]) * d) / lenA] : cur
+    const b = lenB > 1e-9 ? [cur[0] + ((next[0] - cur[0]) * d) / lenB, cur[1] + ((next[1] - cur[1]) * d) / lenB] : cur
+    for (let k = 0; k < steps; k++) {
+      const t = steps === 1 ? 0.5 : k / (steps - 1)
+      const s = 1 - t // quadratic Bézier a → corner → b
+      out.push([s * s * a[0] + 2 * s * t * cur[0] + t * t * b[0], s * s * a[1] + 2 * s * t * cur[1] + t * t * b[1]])
+    }
+  }
+  return out
+}
+
+/** Beam with a rounded-rectangle section — w across the path within its plane, h along Z — swept through points. */
+export function beam(points, w, h, { radius = Math.min(w, h) * 0.3, segments = 48 } = {}) {
+  const curve = new THREE.CatmullRomCurve3(points.map(v3), false, 'centripetal')
+  const section = roundedSection([[w / 2, 0], [w / 2, h / 2], [-w / 2, h / 2], [-w / 2, 0]], radius, 3)
+  const n = new THREE.Vector3()
+  const b = new THREE.Vector3()
+  const rings = []
+  for (let i = 0; i <= segments; i++) {
+    const p = curve.getPointAt(i / segments)
+    const t = curve.getTangentAt(i / segments)
+    n.crossVectors(t, Z_AXIS).normalize()
+    b.crossVectors(n, t).normalize()
+    rings.push(section.map(([s, q]) => [p.x + n.x * s + b.x * q, p.y + n.y * s + b.y * q, p.z + n.z * s + b.z * q]))
+  }
+  return loftRings(rings)
+}
+
 /** Cosine-spaced samples in [0, 1] — denser near the ends for smoothly rounded lofts. */
 export const easedSamples = (count) => Array.from({ length: count }, (_, i) => (1 - Math.cos((Math.PI * i) / (count - 1))) / 2)
 
