@@ -1,12 +1,15 @@
 import * as THREE from 'three'
 import {
   Parts,
+  TAU,
   discX,
   discZ,
+  easedSamples,
   endRound,
   fender,
   finRing,
   loftShape,
+  mergeAll,
   profile,
   rbox,
   ring,
@@ -14,6 +17,7 @@ import {
   smooth01,
   splitLoft,
   spring,
+  superPoint,
   taperBar,
   tube,
 } from './parts.js'
@@ -32,6 +36,7 @@ const FORK_Z = 0.098
 const ARM_Z = 0.1 // swingarm legs
 /** Point on the steering axis, t metres up the fork from the front axle. */
 const fork = (t) => [WB - Math.sin(RAKE) * t, RF + Math.cos(RAKE) * t]
+const lerp = (a, b, t) => a + (b - a) * t
 
 // ── Wheels ───────────────────────────────────────────────────────────────────────────────────
 
@@ -53,7 +58,7 @@ function tankShape(u) {
   const e = endRound(u, 0.09, 0.12)
   const s = { yc, hTop: (top - yc) * e, hBot: (yc - bottom) * e, hw: hw * e, nTop: 2.6, nBot: 3.4 }
   // two-tone split: high at the seat, sweeping down toward the steering head
-  s.cut = yc + (bottom + (0.44 - 0.26 * u) * (top - bottom) - yc) * e
+  s.cut = yc + (bottom + (0.46 - 0.24 * u) * (top - bottom) - yc) * e
   return s
 }
 const tankX = (u) => TANK.x0 + (TANK.x1 - TANK.x0) * u
@@ -78,19 +83,53 @@ function tankFrame(u, t, side, lift = 0.0012) {
   return new THREE.Matrix4().makeBasis(xAxis, yAxis, n).setPosition(p.addScaledVector(n, lift))
 }
 
+/**
+ * Raised "TVS" letters (bold italic), centred in a local plane with u to the right and v up. flip = [±1, ±1]
+ * mirrors u or v so the badge reads correctly on each flank once the model is mirrored (see Parts.build).
+ */
+function tvsLetters([fu, fv]) {
+  const glyphs = [
+    [[0, 0.02], [0.016, 0.02], [0.016, 0.0155], [0.0102, 0.0155], [0.0102, 0], [0.0058, 0], [0.0058, 0.0155], [0, 0.0155]],
+    [[0.018, 0.02], [0.0225, 0.02], [0.0262, 0.0055], [0.0299, 0.02], [0.0344, 0.02], [0.0287, 0], [0.0237, 0]],
+    [[0.0365, 0.02], [0.0525, 0.02], [0.0525, 0.016], [0.0405, 0.016], [0.0405, 0.012], [0.0525, 0.012], [0.0525, 0], [0.0365, 0], [0.0365, 0.004], [0.0485, 0.004], [0.0485, 0.008], [0.0365, 0.008]],
+  ]
+  return mergeAll(
+    glyphs.map((points) => {
+      const shape = new THREE.Shape(points.map(([u, v]) => new THREE.Vector2(fu * (u + 0.25 * v - 0.0288), fv * (v - 0.01))))
+      return new THREE.ExtrudeGeometry(shape, { depth: 0.0018, bevelEnabled: true, bevelThickness: 0.0005, bevelSize: 0.0004, bevelSegments: 1 })
+    }),
+  )
+}
+
 function tank(P) {
   const { upper, lower } = splitLoft(TANK, tankShape, 46)
+  // knee scallops pressed into the rear flanks; the black lower half tucks in under a crisp character line
+  const squeeze = (g, f) => {
+    const pos = g.attributes.position
+    for (let i = 0; i < pos.count; i++) pos.setZ(i, pos.getZ(i) * f(pos.getX(i), pos.getY(i)))
+    g.computeVertexNormals()
+  }
+  squeeze(upper, (x, y) => 1 - 0.07 * Math.exp(-(((x - 0.66) / 0.075) ** 2) - ((y - 0.856) / 0.02) ** 2))
+  squeeze(lower, (x) => 0.982 - 0.05 * (1 - smooth01(0.6, 0.85, x)))
   P.add('paint', upper)
   P.add('paint2', lower)
 
-  // flush aircraft-style fuel cap, tilted to the slope of the crown
+  // aircraft-style fuel cap on the crown: steel flange with six bolts, black hinged lid, lock barrel and key slot
   const uc = 0.66
   const tilt = Math.atan((crown(uc + 0.01) - crown(uc - 0.01)) / (tankX(uc + 0.01) - tankX(uc - 0.01)))
-  P.add('steel', new THREE.CylinderGeometry(0.034, 0.034, 0.008, 32), { p: [tankX(uc), crown(uc) - 0.002, 0], r: [0, 0, tilt] })
-  P.add('black', new THREE.CylinderGeometry(0.026, 0.026, 0.01, 32), { p: [tankX(uc), crown(uc) - 0.001, 0], r: [0, 0, tilt] })
+  const cap = (g) => g.rotateZ(tilt).translate(tankX(uc), crown(uc) - 0.002, 0)
+  P.add('steel', cap(new THREE.CylinderGeometry(0.037, 0.037, 0.006, 40)))
+  P.add('black', cap(new THREE.CylinderGeometry(0.027, 0.027, 0.006, 40).translate(0, 0.004, 0)))
+  for (let i = 0; i < 6; i++) {
+    const a = (i / 6) * TAU + 0.26
+    P.add('steel', cap(new THREE.CylinderGeometry(0.0028, 0.0028, 0.003, 6).translate(Math.cos(a) * 0.032, 0.0045, Math.sin(a) * 0.032)))
+  }
+  P.add('steel', cap(rbox(0.012, 0.004, 0.016, 0.0015).translate(0.026, 0.006, 0))) // hinge
+  P.add('steel', cap(new THREE.CylinderGeometry(0.0065, 0.0065, 0.003, 20).translate(-0.01, 0.0075, 0))) // lock barrel
+  P.add('black', cap(rbox(0.0075, 0.002, 0.0018, 0.0006).translate(-0.01, 0.009, 0)))
 
-  // TVS badge on both flanks, following the curved paint
-  for (const side of [-1, 1]) P.add('metal', rbox(0.07, 0.02, 0.004, 0.0015).applyMatrix4(tankFrame(0.6, 0.4, side)))
+  // chrome TVS letters on both flanks, following the curved paint
+  for (const side of [-1, 1]) P.add('chrome', tvsLetters(side > 0 ? [-1, 1] : [1, -1]).applyMatrix4(tankFrame(0.6, 0.42, side, -0.0004)))
 }
 
 const SEAT = { x0: 0, x1: 0.645 }
@@ -125,10 +164,23 @@ function frontEnd(P) {
     P.add('gold', rod([...fork(0.7), z], [...fork(0.712), z], 0.02, 0.02, 20))
   }
   P.add('metal', discZ([WB, RF, 0], 0.012, FORK_Z * 2 + 0.05, 12))
-  P.add('black', rbox(0.085, 0.036, 0.27, 0.012), { p: [...fork(0.56), 0], r: [0, 0, RAKE] })
-  P.add('black', rbox(0.08, 0.03, 0.26, 0.012), { p: [...fork(0.665), 0], r: [0, 0, RAKE] })
+  // triple clamps: rounded plates square to the steering axis, spanning both fork legs
+  const axis = new THREE.Vector3(-Math.sin(RAKE), Math.cos(RAKE), 0)
+  const across = new THREE.Vector3(Math.cos(RAKE), Math.sin(RAKE), 0)
+  const clamp = [[0.034, 0], [0.03, 0.12], [0.005, 0.132], [-0.035, 0.07], [-0.05, 0], [-0.035, -0.07], [0.005, -0.132], [0.03, -0.12]]
+  const onAxis = (t) => new THREE.Matrix4().makeBasis(across, new THREE.Vector3(0, 0, -1), axis).setPosition(...fork(t), 0)
+  P.add('black', profile(clamp, 0.03, { bevel: 0.006 }).applyMatrix4(onAxis(0.56)))
+  P.add('black', profile(clamp, 0.022, { bevel: 0.005 }).applyMatrix4(onAxis(0.665)))
   P.add('black', rod([...fork(0.53), 0], [...fork(0.69), 0], 0.028, 0.028, 20))
   P.add('metal', rod([...fork(0.68), 0], [...fork(0.69), 0], 0.016, 0.016, 6))
+  for (const side of [-1, 1]) P.add('steel', rod([...fork(0.712), side * FORK_Z], [...fork(0.72), side * FORK_Z], 0.011, 0.011, 6)) // fork-cap nuts
+  // ignition lock with its key, on the top clamp
+  const lock = new THREE.Vector3(...fork(0.665), 0).addScaledVector(across, -0.032).add(new THREE.Vector3(0, 0, 0.05)).addScaledVector(axis, 0.011)
+  const along = (d) => lock.clone().addScaledVector(axis, d).toArray()
+  P.add('black', rod(lock.toArray(), along(0.016), 0.015, 0.015, 24))
+  P.add('steel', rod(along(0.016), along(0.019), 0.012, 0.012, 24))
+  P.add('steel', rod(along(0.019), along(0.034), 0.0035, 0.0028, 4))
+  P.add('black', rbox(0.022, 0.016, 0.006, 0.004).applyMatrix4(new THREE.Matrix4().makeBasis(across, axis, new THREE.Vector3(0, 0, 1)).setPosition(...along(0.042))))
 
   // short body-coloured front fender on a black fork brace
   P.add('paint', fender([WB, RF], RF + 0.022, 0.125, 0.006, 0.022, 0.6, 2.2))
@@ -157,7 +209,11 @@ function frontEnd(P) {
 
 function cockpit(P) {
   // risers and a tapered black handlebar with a 14° sweep at the grips
-  for (const side of [-1, 1]) P.add('black', rod([1.07, 0.905, side * 0.035], [1.06, 0.97, side * 0.035], 0.014))
+  for (const side of [-1, 1]) {
+    P.add('black', rod([1.07, 0.905, side * 0.035], [1.06, 0.965, side * 0.035], 0.014))
+    P.add('black', rbox(0.034, 0.022, 0.03, 0.006), { p: [1.06, 0.985, side * 0.035] }) // bar clamp cap
+    for (const dx of [-0.011, 0.011]) P.add('steel', new THREE.CylinderGeometry(0.0035, 0.0035, 0.004, 12), { p: [1.06 + dx, 0.997, side * 0.035] })
+  }
   const bar = (s) => [
     [0.945, 1.015, s * 0.39],
     [0.975, 1.005, s * 0.27],
@@ -170,7 +226,9 @@ function cockpit(P) {
     const z = (v) => side * v
     P.add('rubber', rod([0.97, 1.0067, z(0.29)], [0.945, 1.015, z(0.39)], 0.017, 0.017, 16))
     P.add('metal', rod([0.945, 1.015, z(0.39)], [0.942, 1.016, z(0.403)], 0.016, 0.016, 16))
-    P.add('black', rbox(0.045, 0.035, 0.04, 0.01), { p: [0.983, 1.002, z(0.255)] })
+    P.add('black', rbox(0.045, 0.036, 0.042, 0.01), { p: [0.983, 1.002, z(0.255)] }) // switch cube with buttons
+    P.add('steel', new THREE.CylinderGeometry(0.004, 0.004, 0.004, 12), { p: [0.9595, 1.009, z(0.247)], r: [0, 0, Math.PI / 2] })
+    P.add('steel', rbox(0.004, 0.006, 0.012, 0.0015), { p: [0.9595, 0.995, z(0.259)] })
     // lever ahead of the grip
     P.add('black', tube([[0.99, 1.0, z(0.265)], [1.006, 0.995, z(0.3)], [1.0, 0.99, z(0.36)], [0.985, 0.988, z(0.385)]], 0.005, { segments: 16 }))
     // round mirrors on curved stalks (overall height 1170 mm at the mirror tops)
@@ -178,10 +236,37 @@ function cockpit(P) {
     P.add('black', new THREE.CylinderGeometry(0.045, 0.045, 0.02, 32), { p: [0.96, 1.128, z(0.315)], r: [0, 0, Math.PI / 2] })
     P.add('chrome', discX([0.948, 1.128, z(0.315)], 0.04, 0.002, 32))
   }
-  P.add('black', rbox(0.04, 0.035, 0.05, 0.01), { p: [0.995, 1.025, -0.235] }) // front brake master cylinder
-  // offset round digital instrument, angled toward the rider
-  P.add('black', new THREE.CylinderGeometry(0.05, 0.048, 0.032, 40), { p: [1.035, 1.005, -0.075], r: [0, 0, 0.64] })
-  P.add('screen', new THREE.CylinderGeometry(0.041, 0.041, 0.004, 40), { p: [1.025, 1.019, -0.075], r: [0, 0, 0.64] })
+  // front brake master cylinder with its fluid reservoir, throttle housing and clutch perch
+  P.add('black', rbox(0.04, 0.03, 0.05, 0.01), { p: [0.995, 1.022, -0.235] })
+  P.add('black', new THREE.CylinderGeometry(0.016, 0.017, 0.016, 24), { p: [0.99, 1.045, -0.235] })
+  P.add('steel', new THREE.CylinderGeometry(0.0175, 0.0175, 0.003, 24), { p: [0.99, 1.0545, -0.235] })
+  P.add('black', rod([0.979, 1.0035, -0.272], [0.975, 1.005, -0.288], 0.019, 0.019, 20))
+  P.add('black', rbox(0.03, 0.026, 0.03, 0.008), { p: [0.995, 1.0, 0.24] })
+  // clutch cable, throttle cable and brake hose looping forward and down past the headstock
+  P.add('black', tube([[1.0, 0.998, 0.245], [1.06, 1.0, 0.18], [1.11, 0.93, 0.07], [1.1, 0.84, 0.045], [1.06, 0.76, 0.04]], 0.0035, { segments: 40 }))
+  P.add('black', tube([[0.985, 1.0, -0.28], [1.05, 0.985, -0.2], [1.11, 0.92, -0.08], [1.1, 0.84, -0.05], [1.06, 0.76, -0.04]], 0.0035, { segments: 40 }))
+  const [h3, h2] = [fork(0.3), fork(0.16)]
+  P.add('black', tube([[0.995, 1.012, -0.232], [1.06, 0.99, -0.16], [1.115, 0.93, -0.06], [1.125, 0.82, 0.02], [1.16, 0.68, 0.068], [h3[0] - 0.005, h3[1], 0.072], [h2[0] - 0.015, h2[1], 0.072], [WB - 0.083, RF + 0.088, 0.072]], 0.004, { segments: 72 }))
+
+  // offset round digital console, angled toward the rider: steel bezel, tacho arc and speed digits
+  const dial = { p: [1.035, 1.005, -0.075], r: [0, 0, 0.64] }
+  P.add('black', new THREE.CylinderGeometry(0.05, 0.048, 0.032, 40), dial)
+  P.add('screen', new THREE.CylinderGeometry(0.041, 0.041, 0.004, 40).translate(0, 0.0175, 0), dial)
+  P.add('steel', new THREE.TorusGeometry(0.0435, 0.0028, 8, 40).rotateX(Math.PI / 2).translate(0, 0.0175, 0), dial)
+  const onScreen = (right, up) => [up, 0.0198, -right] // screen-up is local +X (forward), screen-right the rider's right
+  for (let i = 0; i < 15; i++) {
+    const a = THREE.MathUtils.degToRad(215 - (250 * i) / 14)
+    P.add('light', rod(onScreen(Math.cos(a) * 0.029, Math.sin(a) * 0.029), onScreen(Math.cos(a) * 0.035, Math.sin(a) * 0.035), 0.0011, 0.0011, 4), dial)
+  }
+  const stroke = (x0, y0, x1, y1) => P.add('light', rod(onScreen(x0, y0), onScreen(x1, y1), 0.0007, 0.0007, 4), dial)
+  for (const cx of [-0.0095, 0, 0.0095]) {
+    const [l, r, t, m, b] = [cx - 0.00275, cx + 0.00275, -0.0005, -0.006, -0.0115]
+    stroke(l, t, r, t)
+    stroke(l, m, r, m)
+    stroke(l, b, r, b)
+    stroke(l, b, l, t)
+    stroke(r, b, r, t)
+  }
   P.add('black', rod([1.05, 0.98, -0.06], [1.065, 0.93, -0.04], 0.006))
 }
 
@@ -308,6 +393,10 @@ function chassis(P) {
 function rear(P) {
   // flat one-piece brat seat over a slim black tail cowl; its rounded tip is the LED tail lamp
   P.add('seat', loftShape(SEAT, seatShape, 40, 64))
+  // piped seams along both top edges and across the seat where the rider and pillion halves meet
+  const seam = (u, phi) => [lerp(SEAT.x0, SEAT.x1, u), ...superPoint(phi, seatShape(u))]
+  for (const side of [-1, 1]) P.add('black', tube(easedSamples(28).slice(2, -2).map((u) => seam(u, side * 0.62)), 0.0022, { segments: 64 }))
+  P.add('black', tube(Array.from({ length: 13 }, (_, i) => seam(0.42, -0.62 + (1.24 * i) / 12)), 0.002, { segments: 24 }))
   P.add('tail', loftShape(TAIL, tailShape, 10, 48, 0, 0.09))
   P.add('black', loftShape(TAIL, tailShape, 20, 48, 0.09, 1))
 
