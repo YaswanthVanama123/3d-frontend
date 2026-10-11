@@ -261,6 +261,13 @@ export function loftRings(rings, capTriangles) {
   return orientOutward(g)
 }
 
+/** Closed solid of revolution about the X axis from [radius, x] points — start and end on the axis to close it. */
+export function latheX(points, segments = 48) {
+  const g = new THREE.LatheGeometry(points.map(([r, x]) => new THREE.Vector2(r, x)), segments)
+  g.rotateZ(-Math.PI / 2)
+  return orientOutward(g)
+}
+
 /** Closed solid lofted through cross-sections along X: [{ x, points: [[y, z], …] }] (equal point counts). */
 export const loftX = (sections) => loftRings(sections.map((s) => s.points.map(([y, z]) => [s.x, y, z])))
 

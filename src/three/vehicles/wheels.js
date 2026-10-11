@@ -113,6 +113,19 @@ function discPlate([x, y], rOuter, rInner, z, style) {
   return g
 }
 
+/** ABS tone ring: a 3 mm steel ring with a circle of holes, around the hub at z. */
+export function toneRing(P, { x, y, r0, r1, z, holes = 30 }) {
+  const shape = circlePath(new THREE.Shape(), 0, 0, r1, 72)
+  shape.holes.push(circlePath(new THREE.Path(), 0, 0, r0, 60))
+  for (let i = 0; i < holes; i++) {
+    const a = (i / holes) * TAU
+    shape.holes.push(circlePath(new THREE.Path(), (Math.cos(a) * (r0 + r1)) / 2, (Math.sin(a) * (r0 + r1)) / 2, (r1 - r0) * 0.28, 8))
+  }
+  const g = new THREE.ExtrudeGeometry(shape, { depth: 0.003, bevelEnabled: false })
+  g.translate(x, y, z - 0.0015)
+  P.add('steel', g)
+}
+
 /** Brake disc on a black five-arm carrier, with its caliper at `caliperAngle` (CCW from +X). side ±1 = which face of the wheel. */
 export function brakeDisc(P, { x, y, r, z, side, caliperAngle, style = 'drilled', caliperRole = 'black' }) {
   P.add('steel', discPlate([x, y], r, r * 0.74, z, style))
